@@ -21,6 +21,6 @@ class PhotoDetailViewModel {
     }
     
     var photoDetailViewModel: PhotoCellViewModel {
-        .init(photo: photo)
+        .init(photo: photo, imageDownloader: .init())
     }
 }

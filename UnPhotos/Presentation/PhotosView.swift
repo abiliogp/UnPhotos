@@ -10,13 +10,14 @@ import SwiftUI
 struct PhotosView: View {
     @StateObject var viewModel: PhotosViewModel
     let coordinator: PhotosCoordinator
+    let imageDownloader: ImageDownloader
     
     var body: some View {
         NavigationView {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.photos, id: \.id) { photo in
-                        PhotoCellView(viewModel: PhotoCellViewModel(photo: photo))
+                        PhotoCellView(viewModel: viewModel.viewModel(for: photo))
                             .task {
                                 try? await viewModel.loadMoreIfNeeded(currentPhoto: photo)
                             }
@@ -40,6 +41,7 @@ struct PhotosView: View {
 #Preview {
     PhotosView(
         viewModel: PhotosViewModel(photosLoader: LocalPhotosLoader()),
-        coordinator: PhotosCoordinator()
+        coordinator: .init(),
+        imageDownloader: .init()
     )
 }

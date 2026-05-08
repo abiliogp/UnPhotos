@@ -13,12 +13,12 @@ struct PhotoDetailView: View {
     var body: some View {
         VStack(alignment: .leading) {
             PhotoCellView(viewModel: viewModel.photoDetailViewModel)
-            
+                
             Divider()
             
             Group {
                 Text("Description: \(viewModel.description)")
-                
+            
                 Text("Tags: \(viewModel.tags)")
             }.padding(.horizontal, 16)
         }

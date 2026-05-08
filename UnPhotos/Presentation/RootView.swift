@@ -16,7 +16,9 @@ struct RootView: View {
                 .navigationDestination(for: PhotosCoordinator.Route.self) { route in
                     switch (route) {
                     case let .detailView(photo: photo):
-                        PhotoDetailView(viewModel: PhotoDetailViewModel(photo: photo))
+                        PhotoDetailView(viewModel: PhotoDetailViewModel(
+                            photo: photo
+                        ))
                     }
                 }
         }

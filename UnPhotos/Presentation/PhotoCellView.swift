@@ -35,10 +35,18 @@ struct PhotoCellView: View {
         PhotoCellView(viewModel: result)
     } action: {
         let photo = try? await LocalPhotosLoader.shared.getPhoto()
-        return .init(photo: photo)
+        return .init(
+            photo: photo,
+            imageDownloader: .init()
+        )
     }
 }
 
 #Preview("Photo Loading") {
-    PhotoCellView(viewModel: .init(photo: nil))
+    PhotoCellView(
+        viewModel: .init(
+            photo: nil,
+            imageDownloader: .init()
+        )
+    )
 }

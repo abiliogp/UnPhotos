@@ -25,7 +25,7 @@ final class PhotosCoordinator: ObservableObject {
     
     func start() -> some View {
         let photosViewModel = PhotosViewModel()
-        return PhotosView(viewModel: photosViewModel, coordinator: self)
+        return PhotosView(viewModel: photosViewModel, coordinator: self, imageDownloader: .init())
     }
 }
 

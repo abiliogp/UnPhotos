@@ -14,6 +14,8 @@ class PhotosViewModel: ObservableObject {
     
     private let photosLoader: PhotosLoader
     
+    private var cellViewModels: [String: PhotoCellViewModel] = [:]
+    
     private var page = 0
     private var total = 0
     private var hasMorePages = true
@@ -40,10 +42,18 @@ class PhotosViewModel: ObservableObject {
         try await loadNextPage()
     }
     
+    func viewModel(for photo: Photo) -> PhotoCellViewModel {
+         if let existing = cellViewModels[photo.id] {
+             return existing
+         }
+         let vm = PhotoCellViewModel(photo: photo, imageDownloader:
+                .init())
+         cellViewModels[photo.id] = vm
+         return vm
+     }
+    
     private func loadNextPage() async throws {
-        guard !isLoading else { return }
-        guard hasMorePages else { return }
-        guard !query.isEmpty else { return }
+        guard !isLoading, hasMorePages, !query.isEmpty else { return }
         
         isLoading = true
         defer { isLoading = false }
@@ -54,9 +64,10 @@ class PhotosViewModel: ObservableObject {
             addNewPhotos(response.results)
             hasMorePages = page < response.totalPages
             page += 1
-            
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
-            
+            // Network errors
         }
     }
     
@@ -76,6 +87,7 @@ class PhotosViewModel: ObservableObject {
     private func clear() {
         page  = 0
         total = 0
+        hasMorePages = true
         photos.removeAll()
     }
 }
