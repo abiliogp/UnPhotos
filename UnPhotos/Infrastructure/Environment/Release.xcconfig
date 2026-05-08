@@ -1,0 +1,9 @@
+//
+//  Release.xcconfig
+//  UnPhotos
+//
+//  Created by Abilio Gambim Parada on 30/04/2026.
+//
+
+API_ID = NHr5nmnvy4fJA0AtfpReQm_EI2SBnnvPajDObRtmYbY
+ENDPOINT = https:/$()/api.unsplash.com/search/photos
