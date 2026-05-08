@@ -13,7 +13,7 @@ class PhotosViewModel: ObservableObject {
     @Published var query: String = ""
     
     private let photosLoader: PhotosLoader
-
+    
     private var page = 0
     private var total = 0
     private var hasMorePages = true
@@ -22,7 +22,6 @@ class PhotosViewModel: ObservableObject {
     init(photosLoader: PhotosLoader) {
         self.photosLoader = photosLoader
     }
-    
     
     convenience init() {
         self.init(photosLoader: RemotePhotosLoader())

@@ -31,6 +31,7 @@ public struct Photo: Codable, Hashable, Equatable {
     var links: ResultLinks
     var tags: [Tag]?
     var user: User
+    var altDescription: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -42,6 +43,7 @@ public struct Photo: Codable, Hashable, Equatable {
         case links
         case tags
         case user
+        case altDescription = "alt_description"
     }
    
     public func hash(into hasher: inout Hasher) {

@@ -39,7 +39,7 @@ struct PhotosView: View {
 
 #Preview {
     PhotosView(
-        viewModel: PhotosViewModel(),
+        viewModel: PhotosViewModel(photosLoader: LocalPhotosLoader()),
         coordinator: PhotosCoordinator()
     )
 }

@@ -16,16 +16,29 @@ struct PhotoCellView: View {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(minWidth: 0, maxHeight: 200)
-                    .fixedSize()
             } else {
                 ProgressView()
             }
         }
-        .task(id: viewModel.photo.id) {
+        .frame(maxWidth: .infinity, minHeight: 200)
+        .background(.gray)
+        .cornerRadius(8)
+        .padding(16)
+        .task(id: viewModel.id) {
             await viewModel.getImage()
         }
-        .foregroundStyle(.tint)
     }
 }
 
+#Preview("Photo Ready") {
+    Preview.AsyncPreview { result in
+        PhotoCellView(viewModel: result)
+    } action: {
+        let photo = try? await LocalPhotosLoader.shared.getPhoto()
+        return .init(photo: photo)
+    }
+}
+
+#Preview("Photo Loading") {
+    PhotoCellView(viewModel: .init(photo: nil))
+}

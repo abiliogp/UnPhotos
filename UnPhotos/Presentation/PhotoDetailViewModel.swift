@@ -13,7 +13,11 @@ class PhotoDetailViewModel {
     }
     
     var description: String {
-        photo.description ?? "--"
+        photo.description ?? photo.altDescription ?? "--"
+    }
+
+    var tags: String {
+        photo.tags?.compactMap(\.title).joined(separator: ", ") ?? "--"
     }
     
     var photoDetailViewModel: PhotoCellViewModel {

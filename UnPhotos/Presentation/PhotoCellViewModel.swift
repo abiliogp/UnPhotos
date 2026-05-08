@@ -11,17 +11,24 @@ import SwiftUI
 @MainActor
 class PhotoCellViewModel: ObservableObject {
     
-    let photo: Photo
+    let photo: Photo?
     
     @Published var image: Image?
     
-    init(photo: Photo) {
+    var id: String {
+        return photo?.id ?? UUID().uuidString
+    }
+    
+    init(photo: Photo?) {
         self.photo = photo
     }
     
     func getImage(imageDownloader: ImageDownloader = .init())  async  {
         do {
-            guard let urlImage = URL(string: photo.urls.small) else {
+            guard let photo = photo else {
+                return
+            }
+            guard let urlImage = URL(string: photo.urls.smallS3) else {
                 return
             }
             guard let dataImage = try await imageDownloader.download(from: urlImage) else {

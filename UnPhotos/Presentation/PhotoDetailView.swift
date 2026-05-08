@@ -11,12 +11,25 @@ struct PhotoDetailView: View {
     let viewModel: PhotoDetailViewModel
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             PhotoCellView(viewModel: viewModel.photoDetailViewModel)
-                
+            
             Divider()
-            Text("Description: \(viewModel.description)")
+            
+            Group {
+                Text("Description: \(viewModel.description)")
+                
+                Text("Tags: \(viewModel.tags)")
+            }.padding(.horizontal, 16)
         }
-        
+    }
+}
+
+#Preview {
+    Preview.AsyncPreview { viewModel in
+        PhotoDetailView(viewModel: viewModel)
+    } action: {
+        let photo = try await LocalPhotosLoader.shared.getPhoto()
+        return PhotoDetailViewModel(photo: photo)
     }
 }
