@@ -11,7 +11,6 @@ protocol PhotosLoader {
     func search(query: String, page: Int, perPage: Int) async throws -> ListPhotos
 }
 
-// can be actor? if not why
 class RemotePhotosLoader : PhotosLoader {
     private let client: HTTPClient
     

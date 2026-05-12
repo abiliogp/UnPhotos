@@ -10,24 +10,35 @@ import SwiftUI
 struct PhotosView: View {
     @StateObject var viewModel: PhotosViewModel
     let coordinator: PhotosCoordinator
-    let imageDownloader: ImageDownloader
-    
+
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.photos, id: \.id) { photo in
-                        PhotoCellView(viewModel: viewModel.viewModel(for: photo))
-                            .task {
-                                try? await viewModel.loadMoreIfNeeded(currentPhoto: photo)
-                            }
-                            .onTapGesture {
-                                coordinator.goToDetail(photo: photo)
-                            }
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.photos, id: \.id) { photo in
+                    PhotoCellView(
+                        photo: photo,
+                        imageDownloader: coordinator.imageDownloader,
+                    )
+                    .task {
+                        try? await viewModel.loadMoreIfNeeded(currentPhoto: photo)
                     }
-                    .padding()
+                    .onTapGesture {
+                        coordinator.goToDetail(photo: photo)
+                    }
                 }
+                .padding()
             }
+        }
+        .alert(isPresented: $viewModel.isShowingError) {
+            Alert(
+                title: Text("Search got error"),
+                message: Text(viewModel.errorDescription),
+                dismissButton: Alert.Button.default(Text("Retry")) {
+                    Task {
+                        try await viewModel.search()
+                    }
+                })
+            
         }
         .searchable(text: $viewModel.query)
         .onSubmit(of: .search) {
@@ -40,8 +51,9 @@ struct PhotosView: View {
 
 #Preview {
     PhotosView(
-        viewModel: PhotosViewModel(photosLoader: LocalPhotosLoader()),
+        viewModel: PhotosViewModel(
+            photosLoader: LocalPhotosLoader(),
+        ),
         coordinator: .init(),
-        imageDownloader: .init()
     )
 }

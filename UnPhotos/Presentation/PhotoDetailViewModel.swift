@@ -7,9 +7,11 @@
 
 class PhotoDetailViewModel {
     let photo: Photo
+    let imageDownloader: ImageDownloader
     
-    init(photo: Photo) {
+    init(photo: Photo, imageDownloader: ImageDownloader) {
         self.photo = photo
+        self.imageDownloader = imageDownloader
     }
     
     var description: String {
@@ -18,9 +20,5 @@ class PhotoDetailViewModel {
 
     var tags: String {
         photo.tags?.compactMap(\.title).joined(separator: ", ") ?? "--"
-    }
-    
-    var photoDetailViewModel: PhotoCellViewModel {
-        .init(photo: photo, imageDownloader: .init())
     }
 }

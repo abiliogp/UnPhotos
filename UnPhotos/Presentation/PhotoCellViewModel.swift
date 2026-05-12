@@ -15,15 +15,13 @@ class PhotoCellViewModel: ObservableObject {
     
     @Published var image: Image?
     
-    var imageDownloader: ImageDownloader
-    
-    var id: String {
-        return photo?.urls.smallS3 ?? "id"
-    }
+    let imageDownloader: ImageDownloader
+    let id: String
     
     init(photo: Photo?, imageDownloader: ImageDownloader) {
         self.photo = photo
         self.imageDownloader = imageDownloader
+        self.id = photo?.urls.smallS3 ?? UUID().uuidString
     }
     
     func getImage()  async  {

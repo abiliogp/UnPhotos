@@ -11,22 +11,19 @@ import Foundation
 class PhotosViewModel: ObservableObject {
     @Published private(set) var photos: [Photo] = []
     @Published var query: String = ""
+    @Published var errorDescription = ""
+    @Published var isShowingError = false
     
     private let photosLoader: PhotosLoader
     
-    private var cellViewModels: [String: PhotoCellViewModel] = [:]
-    
-    private var page = 0
-    private var total = 0
+    private var page = 1
     private var hasMorePages = true
     private var isLoading = false
     
-    init(photosLoader: PhotosLoader) {
+    init(
+        photosLoader: PhotosLoader,
+    ) {
         self.photosLoader = photosLoader
-    }
-    
-    convenience init() {
-        self.init(photosLoader: RemotePhotosLoader())
     }
     
     func search() async throws {
@@ -42,16 +39,6 @@ class PhotosViewModel: ObservableObject {
         try await loadNextPage()
     }
     
-    func viewModel(for photo: Photo) -> PhotoCellViewModel {
-         if let existing = cellViewModels[photo.id] {
-             return existing
-         }
-         let vm = PhotoCellViewModel(photo: photo, imageDownloader:
-                .init())
-         cellViewModels[photo.id] = vm
-         return vm
-     }
-    
     private func loadNextPage() async throws {
         guard !isLoading, hasMorePages, !query.isEmpty else { return }
         
@@ -60,14 +47,14 @@ class PhotosViewModel: ObservableObject {
         
         do {
             let response = try await photosLoader.search(query: query, page: page, perPage: 5)
-            
             addNewPhotos(response.results)
             hasMorePages = page < response.totalPages
             page += 1
         } catch is CancellationError {
             throw CancellationError()
         } catch {
-            // Network errors
+            self.errorDescription = error.localizedDescription
+            self.isShowingError = true
         }
     }
     
@@ -85,9 +72,10 @@ class PhotosViewModel: ObservableObject {
     }
     
     private func clear() {
-        page  = 0
-        total = 0
+        page  = 1
         hasMorePages = true
         photos.removeAll()
+        errorDescription = ""
+        isShowingError = false
     }
 }

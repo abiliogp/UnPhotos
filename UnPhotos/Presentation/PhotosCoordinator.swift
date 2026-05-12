@@ -14,6 +14,7 @@ final class PhotosCoordinator: ObservableObject {
     }
     
     @Published var path = NavigationPath()
+    let imageDownloader = ImageDownloader()
     
     func goToDetail(photo: Photo) {
         path.append(Route.detailView(photo: photo))
@@ -21,11 +22,6 @@ final class PhotosCoordinator: ObservableObject {
     
     func goBack() {
         path.removeLast()
-    }
-    
-    func start() -> some View {
-        let photosViewModel = PhotosViewModel()
-        return PhotosView(viewModel: photosViewModel, coordinator: self, imageDownloader: .init())
     }
 }
 

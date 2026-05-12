@@ -10,11 +10,11 @@ import SwiftUI
 @main
 struct UnPhotosApp: App {
     @StateObject private var coordinator = PhotosCoordinator()
+    @StateObject private var photosViewModel = PhotosViewModel(photosLoader: RemotePhotosLoader())
 
-    
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView(viewModel: photosViewModel)
                 .environmentObject(coordinator)
         }
     }

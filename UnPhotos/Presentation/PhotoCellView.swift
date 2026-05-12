@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct PhotoCellView: View {
-    @ObservedObject var viewModel: PhotoCellViewModel
+    @StateObject private var viewModel: PhotoCellViewModel
+    
+    init(photo: Photo?, imageDownloader: ImageDownloader) {
+        self._viewModel = StateObject(wrappedValue: PhotoCellViewModel(photo: photo, imageDownloader: imageDownloader))
+    }
     
     var body: some View {
         Group {
@@ -31,22 +35,17 @@ struct PhotoCellView: View {
 }
 
 #Preview("Photo Ready") {
-    Preview.AsyncPreview { result in
-        PhotoCellView(viewModel: result)
+    Preview.AsyncPreview { photo in
+        PhotoCellView(photo: photo, imageDownloader: .init())
     } action: {
         let photo = try? await LocalPhotosLoader.shared.getPhoto()
-        return .init(
-            photo: photo,
-            imageDownloader: .init()
-        )
+        return photo!
     }
 }
 
 #Preview("Photo Loading") {
     PhotoCellView(
-        viewModel: .init(
-            photo: nil,
-            imageDownloader: .init()
-        )
+        photo: nil,
+        imageDownloader: .init(),
     )
 }

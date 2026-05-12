@@ -12,7 +12,10 @@ struct PhotoDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            PhotoCellView(viewModel: viewModel.photoDetailViewModel)
+            PhotoCellView(
+                photo: viewModel.photo,
+                imageDownloader: viewModel.imageDownloader
+            )
                 
             Divider()
             
@@ -30,6 +33,9 @@ struct PhotoDetailView: View {
         PhotoDetailView(viewModel: viewModel)
     } action: {
         let photo = try await LocalPhotosLoader.shared.getPhoto()
-        return PhotoDetailViewModel(photo: photo)
+        return PhotoDetailViewModel(
+            photo: photo,
+            imageDownloader: .init()
+        )
     }
 }
