@@ -31,7 +31,7 @@ class RemotePhotosLoader : PhotosLoader {
         ]
         
         let (data, response) = try await client.get(from: url.appending(queryItems: queryItems))
-        return try await PhotosMapper.map(data: data, response: response)
+        return try await PhotosMapper.map(data: data, response: response as? HTTPURLResponse)
     }
 }
 

@@ -8,8 +8,8 @@
 import Foundation
 
 enum PhotosMapper {
-    static func map(data: Data, response: URLResponse) async throws -> ListPhotos {
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+    static func map(data: Data, response: HTTPURLResponse?) async throws -> ListPhotos {
+        guard let httpResponse = response, httpResponse.statusCode == 200 else {
             throw HTTPErrors.other
         }
         
