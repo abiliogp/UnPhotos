@@ -8,25 +8,15 @@
 import Foundation
 
 final actor ImageDownloader {
-    private let urlCache: URLCache
     private let urlSession: URLSession
     private let memoryCache: ImageCacher
     
-    init() {
-        self.urlCache = URLCache(
-            memoryCapacity: 1024 * 1024 * 100,
-            diskCapacity: 1024 * 1024 * 100
-        )
-        
-        let config: URLSessionConfiguration = .default
-        config.urlCache = urlCache
-        config.requestCachePolicy = .useProtocolCachePolicy
-        config.timeoutIntervalForRequest = 30
-        config.timeoutIntervalForResource = 60
-        
-        urlSession = URLSession(configuration: config)
-        
-        memoryCache = ImageCacher()
+    init(
+        urlSession: URLSession = ImageDownloader.defaultURLSession(),
+        memoryCache: ImageCacher = ImageCacher()
+    ) {
+        self.urlSession = urlSession
+        self.memoryCache = memoryCache
     }
     
     func download(from url: URL) async throws -> Data? {
@@ -44,5 +34,18 @@ final actor ImageDownloader {
         await memoryCache.put(key: url.absoluteString, value: data)
         
         return data
+    }
+    
+    static func defaultURLSession() -> URLSession {
+        let config: URLSessionConfiguration = .default
+        config.urlCache = URLCache(
+            memoryCapacity: 1024 * 1024 * 100,
+            diskCapacity: 1024 * 1024 * 100
+        )
+        config.requestCachePolicy = .useProtocolCachePolicy
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        
+        return URLSession(configuration: config)
     }
 }

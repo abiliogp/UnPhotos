@@ -8,7 +8,7 @@
 import Foundation
 
 protocol HTTPClient {
-    func get(from url: URL) async throws -> (Data, URLResponse)
+    func get(from url: URL) async throws -> (Data, HTTPURLResponse)
 }
 
 class RemoteHTTPClient: HTTPClient {
@@ -18,7 +18,16 @@ class RemoteHTTPClient: HTTPClient {
         self.urlSession = urlSession
     }
     
-    func get(from url: URL) async throws -> (Data, URLResponse) {
-        return try await urlSession.data(from: url)
+    func get(from url: URL) async throws -> (Data, HTTPURLResponse) {
+        do {
+            let (data, response) = try await urlSession.data(from: url)
+            if let httpResponse = response as? HTTPURLResponse {
+                return (data, httpResponse)
+            } else {
+                throw HTTPErrors.other
+            }
+        } catch {
+            throw HTTPErrors.other
+        }
     }
 }
